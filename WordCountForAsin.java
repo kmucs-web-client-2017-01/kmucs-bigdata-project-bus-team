@@ -29,9 +29,7 @@ public class WordCountForAsin extends Configured implements Tool{
 	
 	public static class WordCountForAsinMapper extends
 			Mapper<LongWritable, Text, Text, Text> {
-		String asin = new String();
-		String description = new String();
-
+		
 		public void map(LongWritable key, Text value, Context context)
 				throws IOException, InterruptedException {
 
@@ -67,7 +65,7 @@ public class WordCountForAsin extends Configured implements Tool{
 		Configuration conf = new Configuration(true);
 
 		Job wordCountForAsin = new Job(conf, "WordCountForAsin");
-		wordCountForAsin.setJarByClass(WordCountMapper.class);
+		wordCountForAsin.setJarByClass(WordCountForAsinMapper.class);
 		wordCountForAsin.setOutputKeyClass(Text.class);
 		wordCountForAsin.setOutputValueClass(Text.class);
 
