@@ -28,7 +28,7 @@ public class Preprocessing {
 	{
 		Stemmer stemmer = new Stemmer();
 		ArrayList<String> words = new ArrayList<String>();
-		text.replaceAll("[^a-zA-Z0-9\\s]", "");
+		text = text.replaceAll("[^a-z A-Z 0-9\\s]", "");
 		String[] splitText = text.split(" ");
 		
 		for(String w : splitText) {
