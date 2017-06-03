@@ -1,15 +1,21 @@
 package kr.ac.kookmin.cs.bigdata;
 
+/*
+ * This java file extracts only the necessary information (asin, salesRank, title, description) from the existing file and creates it as a json file.
+ */
+
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.ArrayList;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.io.ArrayWritable;
+import org.apache.hadoop.io.ObjectWritable;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
@@ -19,103 +25,106 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
-import org.json.*;
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
+
 
 public class MakeJsonFile extends Configured implements Tool
 {
-    public static void main(String[] args) throws Exception
-    {
-        System.out.println(Arrays.toString(args));
-        int res = ToolRunner.run(new Configuration(), new MakeJsonFile(), args);
-      
-        System.exit(res);
-    }
+	public static void main(String[] args) throws Exception
+	{
+		System.out.println(Arrays.toString(args));
+		int res = ToolRunner.run(new Configuration(), new MakeJsonFile(), args);
+		System.exit(res);
+	}
 
-    @Override
-    public int run(String[] args) throws Exception 
-    {
-        System.out.println(Arrays.toString(args));
 
-        Job job = Job.getInstance(getConf());
-        job.setJarByClass(MakeJsonFile.class);
-        
-        job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(Text.class);
+	public int run(String[] args) throws Exception 
+	{
+		System.out.println(Arrays.toString(args));
 
-        job.setMapperClass(Map.class);
-        job.setReducerClass(Reduce.class);
+		Job job = Job.getInstance(getConf());
+		job.setJarByClass(MakeJsonFile.class);
 
-        job.setInputFormatClass(TextInputFormat.class);
-        job.setOutputFormatClass(TextOutputFormat.class);
+		job.setOutputKeyClass(Text.class);
+		job.setOutputValueClass(Outputformat.class);
 
-        FileInputFormat.addInputPath(job, new Path(args[0]));
-        FileOutputFormat.setOutputPath(job, new Path(args[1]));
+		job.setMapperClass(Map.class);
+		job.setReducerClass(Reduce.class);
 
-        job.waitForCompletion(true);
-      
-        return 0;
-    }
-   
-    public static class Map extends Mapper<LongWritable, Text, Text, Text>
-    {
-        private Text word1 = new Text();
-        private Text word2 = new Text();
+		job.setInputFormatClass(TextInputFormat.class);
+		job.setOutputFormatClass(TextOutputFormat.class);
 
-        @Override
-        public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException 
-        {
-        	try
+		FileInputFormat.addInputPath(job, new Path(args[0]));
+		FileOutputFormat.setOutputPath(job, new Path(args[1]));
+
+		job.waitForCompletion(true);
+
+		return 0;
+	}
+
+	public static class Map extends Mapper<LongWritable, Text, Text, Outputformat>
+	{
+		private Text keyAsin = new Text();
+		private ObjectWritable property = new ObjectWritable();
+
+		@Override
+		public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException 
+		{
+			try
 			{
 				JSONObject jsonObj = new JSONObject(value.toString());
-				if(jsonObj.has("description"))
+				if(jsonObj.has("description") && jsonObj.has("salesRank") && jsonObj.has("description") && jsonObj.has("title"))
 				{
-					String temp = jsonObj.get("description").toString();
-					
-					if(temp != null)
-					{
-						for (String token: temp.split("\\s+"))
-						{
-							if(token.equals(temp) == true)
-								continue;
+					String asin = jsonObj.get("asin").toString();
+					String salesRank = jsonObj.getJSONObject("salesRank").toString();
+					String description = jsonObj.get("description").toString();
+					String title = jsonObj.getString("title").toString();
 
-							word1.set(temp);
-							word2.set(token);
-							context.write(word1, word2);
-						}
-					}
+					ArrayList<String> modifiedDescription = Preprocessing.removeNeedlessWords(description);
+					Outputformat out = new Outputformat(new Text(salesRank), new Text(title), modifiedDescription);
+					keyAsin.set(asin);
+					context.write(keyAsin, out);
+					System.out.println(out.toString());
 				}
 			}
 			catch(JSONException e)
 			{
 				e.printStackTrace();
 			}
-        }
-    }
+		}
+	}
 
-    public static class Reduce extends Reducer<Text, Text, Text, NullWritable>
-    {
-        @Override
-        public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException 
-        {
-            JSONObject jsn = new JSONObject();
-            JSONArray arr = new JSONArray();
-            
-            for (Text val : values)
-            	arr.put(val.toString());
-            
-            try
-            {
-            	jsn.put("asin", key);
-            	jsn.put("descriptionWord",arr);
+	public static class Reduce extends Reducer<Text, Outputformat, Text, NullWritable>
+	{
+		@Override
+		public void reduce(Text key, Iterable<Outputformat> values, Context context) throws IOException, InterruptedException 
+		{
+			JSONObject jsn = new JSONObject();
+			JSONArray arr = new JSONArray();
+			
+			try
+			{
+				for(Outputformat val : values)
+				{
+					String salesRank = val.GetSalesRank().toString();
+					String title = val.GetTitle().toString();
+					TextArrayWritable description = val.Getdescription();
+				}
+				
+				jsn.put("asin", key);
+				jsn.put("descriptionWord",arr);
 			}
-            
-            catch (JSONException e)
-            {
+
+			catch (JSONException e)
+			{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-            
-            context.write(new Text(jsn.toString()), null);
-        }
-    }
+
+			context.write(new Text(jsn.toString()), null);
+		}
+	}
 }
