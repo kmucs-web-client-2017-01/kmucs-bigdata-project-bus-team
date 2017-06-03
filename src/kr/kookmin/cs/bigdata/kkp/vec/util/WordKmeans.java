@@ -17,19 +17,19 @@ import kr.kookmin.cs.bigdata.kkp.vec.Word2VEC;
  */
 public class WordKmeans {
 
-    public static void main(String[] args) throws IOException {
-        Word2VEC vec = new Word2VEC();
-        vec.loadGoogleModel("vectors.bin");
-        System.out.println("load model ok!");
-        WordKmeans wordKmeans = new WordKmeans(vec.getWordMap(), 50, 50);
-        Classes[] explain = wordKmeans.explain();
-
-        for (int i = 0; i < explain.length; i++) {
-            System.out.println("--------" + i + "---------");
-            System.out.println(explain[i].getTop(10));
-        }
-
-    }
+//    public static void main(String[] args) throws IOException {
+//        Word2VEC vec = new Word2VEC();
+//        vec.loadGoogleModel("vectors.bin");
+//        System.out.println("load model ok!");
+//        WordKmeans wordKmeans = new WordKmeans(vec.getWordMap(), 50, 50);
+//        Classes[] explain = wordKmeans.explain();
+//
+//        for (int i = 0; i < explain.length; i++) {
+//            System.out.println("--------" + i + "---------");
+//            System.out.println(explain[i].getTop(10));
+//        }
+//
+//    }
 
     private HashMap<String, float[]> wordMap = null;
 

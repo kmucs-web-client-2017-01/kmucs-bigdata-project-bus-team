@@ -405,12 +405,12 @@ public class Learn {
     this.isCbow = isCbow;
   }
 
-  public static void main(String[] args) throws IOException {
-    Learn learn = new Learn();
-    long start = System.currentTimeMillis();
-    learn.learnFile(new File("library/xh.txt"));
-    System.out.println("use time " + (System.currentTimeMillis() - start));
-    learn.saveModel(new File("library/javaVector"));
-
-  }
+//  public static void main(String[] args) throws IOException {
+//    Learn learn = new Learn();
+//    long start = System.currentTimeMillis();
+//    learn.learnFile(new File("library/xh.txt"));
+//    System.out.println("use time " + (System.currentTimeMillis() - start));
+//    learn.saveModel(new File("library/javaVector"));
+//
+//  }
 }
