@@ -12,14 +12,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.hadoop.conf.Configured;
 import org.json.*;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 
-public class RankTop100 {
-
-	public static void main(String[] args){
+public class RankTop100 extends Configured {
+	public static void main(String[] args) throws Exception{
 		
 		if (args.length == 0) {                   // args.length 는 옵션 개수
 		      System.err.println("Input Filename...");
@@ -27,39 +26,49 @@ public class RankTop100 {
 		}
 		
 		System.out.println(Arrays.toString(args));
-		
-		try {
+	
+		//String line = readFileAsString(args[0]);
 			
-			String line = readFileAsString(args[0]);
-			
-			setrank(line, args[1]);
-			
-		} catch (IOException | JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		setrank(args[0], args[1]);
 	}
 	
-	public static void setrank(String line, String outpath) throws JSONException, IOException{
+	public static void setrank(String inpath, String outpath) throws IOException{
 		
 		Map<String, Integer> asinRank = new HashMap<String, Integer>();
+		//Map<String, String> asinDesc = new HashMap<String, String>();		//if include description
 		
-		String[] tuple = line.split("\\n");
+		BufferedReader in = new BufferedReader(new FileReader(inpath));
+	      String s;
+		
+		//String[] tuple = line.split("\\n");
 		JSONObject obj, tempObj;
-		for (int i = 0; i < tuple.length; i++) {
-			obj = new JSONObject(tuple[i]);
+		while ((s = in.readLine()) != null) {
+			try{
+			//System.out.println("sssssssssssssss : " + s);
+			obj = new JSONObject(s);
 			if(!obj.has("salesRank"))
 				continue;
+			//if(!obj.has("salesRank") || !obj.has("description"))	//if include description
+				//continue;
 			String asin = obj.get("asin").toString();
 			String temprank = obj.get("salesRank").toString();
+			//String tempdesc = obj.get("description").toString();	//if include description
 			
 			tempObj = new JSONObject(temprank);
 			
 			int rank = tempObj.getInt("Books");
 			
-			if(rank > 0 && rank <= 5000000)
+			if(rank > 0 && rank <= 100000){
 				asinRank.put(asin, rank);
+				//asinDesc.put(asin, tempdesc);				// if include description
+			}
+		}catch (JSONException e){
+			System.out.println("ssssssssssssssssssss" + s);
+			e.printStackTrace();
 		}
+		}
+		
+		//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 		
 		Iterator it = sortByValue(asinRank).iterator();
 		int count = 0;
@@ -67,12 +76,13 @@ public class RankTop100 {
 		FileWriter file = new FileWriter(outpath);
 		JSONObject obj_temp = new JSONObject();
 		while(it.hasNext()){
-			
+			try{
 			if(count == 100)
 				break;
 			String asin_str = it.next().toString();
 			obj_temp.put("asin", asin_str);
 			obj_temp.put("salesRank", asinRank.get(asin_str));
+			//obj_temp.put("description", asinDesc.get(asin_str));	//if include description
 			
 			System.out.print(obj_temp.toString() + "\n");
 			
@@ -80,6 +90,10 @@ public class RankTop100 {
 			file.flush();
 				
 			count++;
+			
+			}catch(JSONException e){
+				e.printStackTrace();
+			}
 		}
 		
 		file.close();
@@ -103,7 +117,6 @@ public class RankTop100 {
 		//Collections.reverse(list);
 		return list;
 	}
-	
 	
 	private static String readFileAsString(String filePath) throws IOException {
         StringBuffer fileData = new StringBuffer();
