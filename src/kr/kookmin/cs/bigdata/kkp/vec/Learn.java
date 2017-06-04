@@ -263,7 +263,7 @@ public class Learn {
   }
 
   /**
-   * 对文本进行预分类
+   * Pre-classify the text
    * 
    * @param files
    * @throws IOException
@@ -321,7 +321,7 @@ public class Learn {
     readVocab(file);
     new Haffman(layerSize).make(wordMap.values());
 
-    // 查找每个神经元
+    // Find each neuron
     for (Neuron neuron : wordMap.values()) {
       ((WordNeuron) neuron).makeNeurons();
     }
@@ -334,7 +334,7 @@ public class Learn {
       throws IOException {
     readVocabWithSupervised(classifiedFiles);
     new Haffman(layerSize).make(wordMap.values());
-    // 查找每个神经元
+    // Find each neuron
     for (Neuron neuron : wordMap.values()) {
       ((WordNeuron) neuron).makeNeurons();
     }

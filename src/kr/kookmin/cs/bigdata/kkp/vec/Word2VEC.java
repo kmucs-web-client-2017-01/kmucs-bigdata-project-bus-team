@@ -37,9 +37,7 @@ public class Word2VEC {
 		try {
 			bis = new BufferedInputStream(new FileInputStream(path));
 			dis = new DataInputStream(bis);
-			// //读取词数
 			words = Integer.parseInt(readString(dis));
-			// //大小
 			size = Integer.parseInt(readString(dis));
 			String word;
 			float[] vectors = null;
@@ -319,6 +317,14 @@ public class Word2VEC {
 			return 0;
 		}
 		return calDist(word1Vec, word2Vec);
+	}
+	
+	public static void trainModel(String trainFilePath, String modelFilePath) throws IOException {
+		Learn learn = new Learn();
+	    long start = System.currentTimeMillis();
+	    learn.learnFile(new File(trainFilePath));
+	    System.out.println("use time " + (System.currentTimeMillis() - start));
+	    learn.saveModel(new File(modelFilePath));
 	}
 
 }

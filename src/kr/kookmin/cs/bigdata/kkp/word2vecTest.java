@@ -63,7 +63,7 @@ public class word2vecTest extends Configured implements Tool {
 		System.out.println(Arrays.toString(args));
 		
 		FILEPATH = args[2];
-//		word2vec.loadGoogleModel(FILEPATH);
+		word2vec.loadGoogleModel(FILEPATH);
 		
 		
 		Job job = Job.getInstance(getConf());
@@ -103,7 +103,7 @@ public class word2vecTest extends Configured implements Tool {
 					description = obj.getString("description");
 					String sample = Preprocessing.removeNeedlessWords(description).get(0);
 //					Float f = word2vec.wordSimilarity(sample, "love");
-					context.write(new Text(book), new Text(sample));
+					context.write(new Text(book), new Text( sample + " " + word2vec.distance(sample).toString()));
 				}
 			} catch (JSONException e) {
 				e.printStackTrace();
