@@ -1,18 +1,13 @@
 package kr.ac.kookmin.cs.bigdata;
 
 import java.io.IOException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-import kr.ac.kookmin.cs.bigdata.CalculateTFIDF.ProcessTFIDFMapper;
-import kr.ac.kookmin.cs.bigdata.CalculateTFIDF.ProcessTFIDFReducer;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
@@ -22,7 +17,6 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
-import org.apache.hadoop.mapreduce.Reducer.Context;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
@@ -54,7 +48,6 @@ public class TopwordInTFIDF extends Configured implements Tool {
 				throws IOException, InterruptedException {
 
 			HashMap<String, Double> map = new HashMap<String, Double>();
-			String rankResult = "" ;
 			String rankword = "" ;
 			String ranktfidf = "" ;
 			int rankCount = 0 ;

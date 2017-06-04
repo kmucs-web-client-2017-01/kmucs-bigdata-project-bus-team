@@ -1,6 +1,8 @@
 package kr.ac.kookmin.cs.bigdata;
 
 import java.io.IOException;
+import java.util.ArrayList;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
@@ -22,6 +24,7 @@ import org.json.JSONObject;
 public class WordCount extends Configured implements Tool {
 	public static class WordCountMapper extends
 			Mapper<LongWritable, Text, Text, IntWritable> {
+		final static int MINIMUM_LENGTH = 10 ;
 		String asin = new String();
 		String description = new String();
 
@@ -34,6 +37,8 @@ public class WordCount extends Configured implements Tool {
 				jsonObj = new JSONObject(value.toString());
 				if (jsonObj.has("description")) {
 					description = jsonObj.get("description").toString();
+					if (description.length() < MINIMUM_LENGTH )
+						return ;
 					asin = jsonObj.get("asin").toString();
 				} else
 					return;
@@ -43,13 +48,19 @@ public class WordCount extends Configured implements Tool {
 			}
 
 			description = Tfidf.StringReplace(description);
-			description = description.toLowerCase();
-			String[] t_description = description.split("\\s+");
-
-			for (String val : t_description) {
-				context.write(new Text(val + "@" + asin),
-						new IntWritable(1));
+			ArrayList<String> listDescription = Preprocessing.removeNeedlessWords(description) ;
+			
+			for ( String val : listDescription){
+				context.write(new Text(val.toLowerCase() + "@" + asin), new IntWritable(1));
 			}
+			
+//			description = description.toLowerCase();
+//			String[] t_description = description.split("\\s+");
+//
+//			for (String val : t_description) {
+//				context.write(new Text(val + "@" + asin),
+//						new IntWritable(1));
+//			}
 
 		}
 	}
