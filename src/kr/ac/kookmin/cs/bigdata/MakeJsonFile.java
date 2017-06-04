@@ -87,7 +87,6 @@ public class MakeJsonFile extends Configured implements Tool
 					Outputformat out = new Outputformat(new Text(salesRank), new Text(title), modifiedDescription);
 					keyAsin.set(asin);
 					context.write(keyAsin, out);
-					System.out.println(out.toString());
 				}
 			}
 			catch(JSONException e)
@@ -104,17 +103,31 @@ public class MakeJsonFile extends Configured implements Tool
 		{
 			JSONObject jsn = new JSONObject();
 			JSONArray arr = new JSONArray();
-			
+			JSONObject book = new JSONObject();
+			String str = "";
+			String salesRank = "";
+			String title = "";
 			try
 			{
 				for(Outputformat val : values)
 				{
-					String salesRank = val.GetSalesRank().toString();
-					String title = val.GetTitle().toString();
-					TextArrayWritable description = val.Getdescription();
+					salesRank = val.GetSalesRank().toString();
+					book.put("Books", salesRank.substring(salesRank.indexOf(":")+1, salesRank.length()-1));
+					title = val.GetTitle().toString();
+					String description = val.Getdescription().toString();
+					
+					for (String token: description.split("\\s+"))
+					{
+						if(!str.contains(token))
+						{
+							str += token + " ";
+							arr.put(token);
+						}
+					}
 				}
-				
 				jsn.put("asin", key);
+				jsn.put("salesRank", book);
+				jsn.put("title", title);
 				jsn.put("descriptionWord",arr);
 			}
 
