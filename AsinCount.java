@@ -18,7 +18,7 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 
 public class AsinCount extends Configured implements Tool{
-	
+
 	public static class AsinCountMapper extends
 			Mapper<LongWritable, Text, Text, Text> {
 		
@@ -42,15 +42,15 @@ public class AsinCount extends Configured implements Tool{
 	        for (Text val : values) {
 	        	map_list.add(val.toString()) ;
 	        }
-	        Tfidf.numofAsin = map_list.size();
-	      //  context.write(new Text(""), new IntWritable(Tfidf.numofAsin )) ;
+	        context.write(new Text(Integer.toString(map_list.size())), new Text("")) ;
 		}
 	}
 
 	public int run(String[] args) throws Exception {
 
 		Configuration conf = new Configuration(true);
-
+		conf.set("fs.default.name", "hdfs://" + "master" + ":9000") ;
+		
 		Job asinCount = new Job(conf, "asinCount");
 		asinCount.setJarByClass(AsinCountMapper.class);
 		asinCount.setOutputKeyClass(Text.class);

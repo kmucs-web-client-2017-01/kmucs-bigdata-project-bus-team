@@ -92,7 +92,8 @@ public class TopwordInTFIDF extends Configured implements Tool {
 	public int run(String[] args) throws Exception {
 
 		Configuration conf = new Configuration(true);
-
+		conf.set("fs.default.name", "hdfs://" + "master" + ":9000") ;
+		
 		Job topword = new Job(conf, "topword");
 		topword.setJarByClass(TopwordInTFIDFMapper.class);
 		topword.setOutputKeyClass(Text.class);

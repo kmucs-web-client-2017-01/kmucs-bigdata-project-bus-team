@@ -63,7 +63,8 @@ public class WordCountForAsin extends Configured implements Tool{
 	public int run(String[] args) throws Exception {
 
 		Configuration conf = new Configuration(true);
-
+		conf.set("fs.default.name", "hdfs://" + "master" + ":9000") ;
+		
 		Job wordCountForAsin = new Job(conf, "WordCountForAsin");
 		wordCountForAsin.setJarByClass(WordCountForAsinMapper.class);
 		wordCountForAsin.setOutputKeyClass(Text.class);

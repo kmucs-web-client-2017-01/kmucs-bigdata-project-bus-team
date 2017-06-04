@@ -8,6 +8,15 @@ import org.apache.hadoop.util.ToolRunner;
 
 public class Tfidf extends Configured implements Tool {
 
+//	static String SERVER_PATH = "/student2/KiHyeonPark/" ;
+//	static String OUTPUTPATH5 = SERVER_PATH + "output5" ;
+//	static String INPUTPATH4 = SERVER_PATH + "output3/part-r-00000" ;
+//	static String OUTPUTPATH4 = SERVER_PATH + "output4" ;
+//	static String INPUTPATH3 = SERVER_PATH + "output2/part-r-00000" ;
+//	static String OUTPUTPATH3 = SERVER_PATH + "output3" ;
+//	static String INPUTPATH2 = SERVER_PATH + "output/part-r-00000" ;
+//	static String OUTPUTPATH2 = SERVER_PATH + "output2" ;
+//	
 	static String SERVER_PATH = "/student2/KiHyeonPark/" ;
 	static String OUTPUTPATH5 = SERVER_PATH + "output5" ;
 	static String INPUTPATH4 = SERVER_PATH + "output3/part-r-00000" ;
@@ -16,7 +25,7 @@ public class Tfidf extends Configured implements Tool {
 	static String OUTPUTPATH3 = SERVER_PATH + "output3" ;
 	static String INPUTPATH2 = SERVER_PATH + "output/part-r-00000" ;
 	static String OUTPUTPATH2 = SERVER_PATH + "output2" ;
-	
+//	
 //	static String OUTPUTPATH5 = "/home/kmucs/workspace/WordCount/output5" ;
 //	static String INPUTPATH4 = "/home/kmucs/workspace/WordCount/output3/part-r-00000" ;
 //	static String OUTPUTPATH4 = "/home/kmucs/workspace/WordCount/output4" ;
@@ -26,8 +35,7 @@ public class Tfidf extends Configured implements Tool {
 //	static String OUTPUTPATH2 = "/home/kmucs/workspace/WordCount/output2" ;
 	static String INPUTPATH ;
 	static String OUTPUTPATH ;
-	static int numofAsin = 0 ;
-	
+
 	public static void main(String[] args) throws Exception {
 		System.out.println(Arrays.toString(args));
 		int res = ToolRunner.run(new Configuration(), new Tfidf(), args);

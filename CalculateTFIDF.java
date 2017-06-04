@@ -1,5 +1,11 @@
 package kr.ac.kookmin.cs.bigdata;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.HashMap;
@@ -21,7 +27,7 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 
 public class CalculateTFIDF extends Configured implements Tool {
-	
+	private static int numAsin = 0 ;
 	public static class ProcessTFIDFMapper extends
 			Mapper<LongWritable, Text, Text, Text> {
 
@@ -43,7 +49,7 @@ public class CalculateTFIDF extends Configured implements Tool {
 				Context context) throws IOException, InterruptedException {
 
 			 // get the number of documents indirectly from the file-system (stored in the job name on purpose)
-	        int numberOfDocumentsInCorpus = Tfidf.numofAsin ;
+	        int numberOfDocumentsInCorpus = 373  ;
 	        // total frequency of this word
 	        int numberOfDocumentsInCorpusWhereKeyAppears = 0;
 	        Map<String, String> tempFrequencies = new HashMap<String, String>();
@@ -55,21 +61,14 @@ public class CalculateTFIDF extends Configured implements Tool {
 	        for (String document : tempFrequencies.keySet()) {
 	            String[] wordFrequenceAndTotalWords = tempFrequencies.get(document).split("/");
 	 
-	            //Term frequency is the quocient of the number of terms in document and the total number of terms in doc
 	            double tf = Double.valueOf(Double.valueOf(wordFrequenceAndTotalWords[0])
 	                    / Double.valueOf(wordFrequenceAndTotalWords[1]));
 	 
-	            //interse document frequency quocient between the number of docs in corpus and number of docs the term appears
 	            double idf = (double) numberOfDocumentsInCorpus / (double) numberOfDocumentsInCorpusWhereKeyAppears;
 	 
-	            //given that log(10) = 0, just consider the term frequency in documents
 	            double tfIdf = numberOfDocumentsInCorpus == numberOfDocumentsInCorpusWhereKeyAppears ?
 	                    tf : tf * Math.log10(idf);
-	 
-//	            context.write(new Text(key + "@" + document), new Text("[" + numberOfDocumentsInCorpusWhereKeyAppears + "/"
-//	                    + numberOfDocumentsInCorpus + " , " + wordFrequenceAndTotalWords[0] + "/"
-//	                    + wordFrequenceAndTotalWords[1] + " , " + DF.format(tfIdf) + "]"));
-	            
+	            //context.write(new Text(key + "@" + document), new Text(Double.toString(tfIdf)));
 	            context.write(new Text(key + "@" + document), new Text(DF.format(tfIdf)));
 	        }
 		}
@@ -78,7 +77,8 @@ public class CalculateTFIDF extends Configured implements Tool {
 	public int run(String[] args) throws Exception {
 
 		Configuration conf = new Configuration(true);
-
+		conf.set("fs.default.name", "hdfs://" + "master" + ":9000") ;
+		
 		Job calTFIDF = new Job(conf, "calTFIDF");
 		calTFIDF.setJarByClass(ProcessTFIDFMapper.class);
 		calTFIDF.setOutputKeyClass(Text.class);

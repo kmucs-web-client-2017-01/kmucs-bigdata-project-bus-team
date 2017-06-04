@@ -54,14 +54,6 @@ public class WordCount extends Configured implements Tool {
 				context.write(new Text(val.toLowerCase() + "@" + asin), new IntWritable(1));
 			}
 			
-//			description = description.toLowerCase();
-//			String[] t_description = description.split("\\s+");
-//
-//			for (String val : t_description) {
-//				context.write(new Text(val + "@" + asin),
-//						new IntWritable(1));
-//			}
-
 		}
 	}
 
