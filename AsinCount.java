@@ -6,7 +6,6 @@ import java.util.HashSet;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
@@ -64,7 +63,7 @@ public class AsinCount extends Configured implements Tool{
 		asinCount.setOutputFormatClass(TextOutputFormat.class);
 
 		FileInputFormat.addInputPath(asinCount, new Path(Tfidf.INPUTPATH2));
-		FileOutputFormat.setOutputPath(asinCount, new Path(Tfidf.OUTPUTPATH4));
+		FileOutputFormat.setOutputPath(asinCount, new Path(Tfidf.OUTPUTPATH5));
 
 		asinCount.waitForCompletion(true);
 		

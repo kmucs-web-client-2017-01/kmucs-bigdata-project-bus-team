@@ -45,7 +45,7 @@ public class CalculateTFIDF extends Configured implements Tool {
 
 	public static class ProcessTFIDFReducer extends
 			Reducer<Text, Text, Text, Text> {
-		private static final DecimalFormat DF = new DecimalFormat("###.########");
+		private static final DecimalFormat DF = new DecimalFormat("###.#######");
 		 
 		public void reduce(Text key, Iterable<Text> values,
 				Context context) throws IOException, InterruptedException {
@@ -74,9 +74,11 @@ public class CalculateTFIDF extends Configured implements Tool {
 	            double tfIdf = numberOfDocumentsInCorpus == numberOfDocumentsInCorpusWhereKeyAppears ?
 	                    tf : tf * Math.log10(idf);
 	 
-	            context.write(new Text(key + "@" + document), new Text("[" + numberOfDocumentsInCorpusWhereKeyAppears + "/"
-	                    + numberOfDocumentsInCorpus + " , " + wordFrequenceAndTotalWords[0] + "/"
-	                    + wordFrequenceAndTotalWords[1] + " , " + DF.format(tfIdf) + "]"));
+//	            context.write(new Text(key + "@" + document), new Text("[" + numberOfDocumentsInCorpusWhereKeyAppears + "/"
+//	                    + numberOfDocumentsInCorpus + " , " + wordFrequenceAndTotalWords[0] + "/"
+//	                    + wordFrequenceAndTotalWords[1] + " , " + DF.format(tfIdf) + "]"));
+	            
+	            context.write(new Text(key + "@" + document), new Text(DF.format(tfIdf)));
 	        }
 		}
 	}

@@ -8,6 +8,8 @@ import org.apache.hadoop.util.ToolRunner;
 
 public class Tfidf extends Configured implements Tool {
 
+	static String OUTPUTPATH5 = "/home/kmucs/workspace/WordCount/output5" ;
+	static String INPUTPATH4 = "/home/kmucs/workspace/WordCount/output3/part-r-00000" ;
 	static String OUTPUTPATH4 = "/home/kmucs/workspace/WordCount/output4" ;
 	static String INPUTPATH3 = "/home/kmucs/workspace/WordCount/output2/part-r-00000" ;
 	static String OUTPUTPATH3 = "/home/kmucs/workspace/WordCount/output3" ;
@@ -32,6 +34,7 @@ public class Tfidf extends Configured implements Tool {
 		ToolRunner.run(new Configuration(), new AsinCount(), args);
 		ToolRunner.run(new Configuration(), new WordCountForAsin(), args);
 		ToolRunner.run(new Configuration(), new CalculateTFIDF(), args);
+		ToolRunner.run(new Configuration(), new TopwordInTFIDF(), args);
 		return 1 ;
 	}
 
