@@ -48,6 +48,7 @@ public class ListingForTfidf
 				isNotHave.write(temp[0] + " " + temp[1] + "\n");
 				isNotHave.flush();
 			}
+			System.out.println(".");
 		}
 		in.close();
 	}
@@ -56,6 +57,6 @@ public class ListingForTfidf
 	{
 		ListingForTfidf listForTfidf = new ListingForTfidf();
 		listForTfidf.ReadJsonFile("rank-top3.json");
-		listForTfidf.ReadFileAndClassifier("tfidf-row100");
+		listForTfidf.ReadFileAndClassifier("tfidf");
 	}
 }

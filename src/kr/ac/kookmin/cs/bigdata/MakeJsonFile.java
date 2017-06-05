@@ -14,7 +14,6 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.io.ArrayWritable;
 import org.apache.hadoop.io.ObjectWritable;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -25,9 +24,10 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
+//import org.codehaus.jettison.json.JSONArray;
+//import org.codehaus.jettison.json.JSONException;
+//import org.codehaus.jettison.json.JSONObject;
+import org.json.*;
 
 
 
@@ -70,11 +70,12 @@ public class MakeJsonFile extends Configured implements Tool
 		private Text keyAsin = new Text();
 		private ObjectWritable property = new ObjectWritable();
 
+		
 		@Override
 		public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException 
 		{
 			try
-			{
+			{				
 				JSONObject jsonObj = new JSONObject(value.toString());
 				if(jsonObj.has("description") && jsonObj.has("salesRank") && jsonObj.has("description") && jsonObj.has("title"))
 				{
@@ -129,15 +130,13 @@ public class MakeJsonFile extends Configured implements Tool
 				jsn.put("salesRank", book);
 				jsn.put("title", title);
 				jsn.put("descriptionWord",arr);
+				context.write(new Text(jsn.toString()), null);
 			}
-
 			catch (JSONException e)
 			{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
-
-			context.write(new Text(jsn.toString()), null);
+			}			
 		}
 	}
 }

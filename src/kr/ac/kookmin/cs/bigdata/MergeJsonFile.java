@@ -14,22 +14,22 @@ import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
-import org.json.JSONException;
-import org.json.JSONObject;
+
 
 public class MergeJsonFile
 {
-	public static void main(String[] args) throws IOException, InterruptedException, JSONException
+	public static void main(String[] args) throws IOException, InterruptedException
 	{
-		MergeTopAndOverallFile("topFile.txt", "overallFile.txt");
+		MergeJsonFile mjf = new MergeJsonFile();
+		MergeTopAndOverallFile("top100Books", "tfidf-row100");
 	}
 
-	public static void MergeTopAndOverallFile(final String topJsonFilePath, final String overallJsonFilePath) throws IOException, JSONException
+	public static void MergeTopAndOverallFile(final String topJsonFilePath, final String overallJsonFilePath) throws IOException
 	{
 		BufferedReader topIn = new BufferedReader(new FileReader(topJsonFilePath));
 		BufferedWriter fw = new BufferedWriter(new FileWriter("mergedFile.txt", true));
 
-		try 
+		try
 		{
 			String topString, overallString;
 

@@ -13,10 +13,6 @@ package kr.ac.kookmin.cs.bigdata;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.ArrayList;
-
-import kr.ac.kookmin.cs.bigdata.MakeJsonFile.Map;
-import kr.ac.kookmin.cs.bigdata.MakeJsonFile.Reduce;
-
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
@@ -38,6 +34,8 @@ import org.apache.hadoop.util.ToolRunner;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+
+
 
 public class ChangeFormatByOverall  extends Configured implements Tool
 {
