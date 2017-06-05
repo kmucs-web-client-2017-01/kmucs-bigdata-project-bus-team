@@ -139,7 +139,7 @@ public class Learn {
         continue;
       }
 
-      double[] neu1e = new double[layerSize];// 误差项
+      double[] neu1e = new double[layerSize];
       // HIERARCHICAL SOFTMAX
       List<Neuron> neurons = word.neurons;
       WordNeuron we = sentence.get(c);
@@ -271,7 +271,7 @@ public class Learn {
    */
   private void readVocabWithSupervised(File[] files) throws IOException {
     for (int category = 0; category < files.length; category++) {
-      // 对多个文件学习
+    	
       MapCount<String> mc = new MapCount<>();
       try (BufferedReader br = new BufferedReader(new InputStreamReader(
           new FileInputStream(files[category])))) {
@@ -405,12 +405,12 @@ public class Learn {
     this.isCbow = isCbow;
   }
 
-//  public static void main(String[] args) throws IOException {
-//    Learn learn = new Learn();
-//    long start = System.currentTimeMillis();
-//    learn.learnFile(new File("library/xh.txt"));
-//    System.out.println("use time " + (System.currentTimeMillis() - start));
-//    learn.saveModel(new File("library/javaVector"));
-//
-//  }
+  public static void main(String[] args) throws IOException {
+    Learn learn = new Learn();
+    long start = System.currentTimeMillis();
+    learn.learnFile(new File("learn.txt"));
+    System.out.println("use time " + (System.currentTimeMillis() - start));
+    learn.saveModel(new File("save.bin"));
+
+  }
 }

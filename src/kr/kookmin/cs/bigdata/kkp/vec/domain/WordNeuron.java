@@ -8,7 +8,7 @@ import java.util.Random;
 public class WordNeuron extends Neuron {
   public String name;
   public double[] syn0 = null; // input->hidden
-  public List<Neuron> neurons = null;// Path neurons
+  public List<Neuron> neurons = null; // Path neurons
   public int[] codeArr = null;
 
   public List<Neuron> makeNeurons() {

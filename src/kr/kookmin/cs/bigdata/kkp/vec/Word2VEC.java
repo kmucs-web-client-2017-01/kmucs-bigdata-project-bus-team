@@ -9,6 +9,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
+
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -27,7 +32,8 @@ public class Word2VEC {
 	private int size;
 	private int topNSize = 40;
 	private boolean loadModel = false;
-
+	
+	
 	public void loadGoogleModel(String path) throws IOException {
 		loadModel = true;
 		DataInputStream dis = null;
@@ -35,10 +41,17 @@ public class Word2VEC {
 		double len = 0;
 		float vector = 0;
 		try {
-			bis = new BufferedInputStream(new FileInputStream(path));
+			
+			// Also Location of file in HDFS is possible (fix).
+			Path pt = new Path(path); 
+			FileSystem fs;
+			fs = FileSystem.get(new Configuration());
+			bis = new BufferedInputStream(fs.open(pt));
 			dis = new DataInputStream(bis);
+
 			words = Integer.parseInt(readString(dis));
 			size = Integer.parseInt(readString(dis));
+			
 			String word;
 			float[] vectors = null;
 			for (int i = 0; i < words; i++) {
@@ -156,6 +169,7 @@ public class Word2VEC {
 		if (center == null) {
 			return Collections.emptySet();
 		}
+		
 
 		int resultSize = wordMap.size() < topNSize ? wordMap.size() : topNSize;
 		TreeSet<WordEntry> result = new TreeSet<WordEntry>();
@@ -319,6 +333,7 @@ public class Word2VEC {
 		return calDist(word1Vec, word2Vec);
 	}
 	
+	// for simple train function
 	public static void trainModel(String trainFilePath, String modelFilePath) throws IOException {
 		Learn learn = new Learn();
 	    long start = System.currentTimeMillis();

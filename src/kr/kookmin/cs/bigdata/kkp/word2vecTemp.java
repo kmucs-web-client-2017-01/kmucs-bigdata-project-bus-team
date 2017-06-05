@@ -1,11 +1,14 @@
 package kr.kookmin.cs.bigdata.kkp;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
@@ -23,24 +26,22 @@ import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import org.json.*;   // * 를 활용한 모든 라이브러리 포함은 위험
 
+import com.google.gson.Gson;
+
 import kr.kookmin.cs.bigdata.kkp.vec.Word2VEC;
 
+/*
+ * This code is only Test code
+ */
 
-
-public class word2vecTest extends Configured implements Tool {
+public class word2vecTemp extends Configured implements Tool {
 	
-	private static Word2VEC word2vec = new Word2VEC();
+//	private static Word2VEC word2vec = new Word2VEC();
 	private static String FILEPATH;
 	public static void main(String[] args) throws Exception {
+		FILEPATH = args[2];
+//		word2vec.loadGoogleModel(FILEPATH);
 		
-//		Preprocessing preprocessing = new Preprocessing();
-		// TODO Auto-generated method stub
-//		String FILE = "data/frWiki_no_lem_no_postag_no_phrase_1000_skip_cut100.bin";
-//
-//		System.out.println("Start....");
-//		Word2VEC w1 = new Word2VEC();
-//		w1.loadGoogleModel(FILE);
-//
 //		System.out.println(w1.distance("lover"));
 //		System.out.println(w1.wordSimilarity("loves", "happy"));
 //		String testStr = "Who is likes";
@@ -50,10 +51,18 @@ public class word2vecTest extends Configured implements Tool {
 //		li = Preprocessing.removeNeedlessWords(testStr);
 //		
 //		System.out.println(li.get(0));
+//		Gson gson = new Gson();
+//        String testSerialization1 = gson.toJson(word2vec);
+//		System.out.println(Long.parseLong("the"));
+		
 		
 		System.out.println(Arrays.toString(args));
-		
-		int res = ToolRunner.run(new Configuration(), new word2vecTest(), args);
+		Configuration config = new Configuration();
+//		config.set("instance1", testSerialization1);
+		config.set("filePath", args[2]);
+//	    config.set("fs.default.name", "hdfs://" + "master" + ":9000") ;
+
+		int res = ToolRunner.run(config, new word2vecTemp(), args);
 		System.exit(res);
 	}
 
@@ -61,13 +70,9 @@ public class word2vecTest extends Configured implements Tool {
 	@Override
 	public int run(String[] args) throws Exception {
 		System.out.println(Arrays.toString(args));
-		
-		FILEPATH = args[2];
-		word2vec.loadGoogleModel(FILEPATH);
-		
-		
+
 		Job job = Job.getInstance(getConf());
-		job.setJarByClass(word2vecTest.class);
+		job.setJarByClass(word2vecTemp.class);
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(Text.class);
 
@@ -85,29 +90,48 @@ public class word2vecTest extends Configured implements Tool {
 		return 0;
 	}
 
-	public static class wordMap extends
-			Mapper<LongWritable, Text, Text, Text> {
+	public static class wordMap extends Mapper<LongWritable, Text, Text, Text> {
+		Configuration conf;
+		String filePath;
+		Word2VEC word2vec = new Word2VEC();
+
+		public void setup(Context context) {
+			conf = context.getConfiguration();
+			filePath = conf.get("filePath");
+//			Path pt=new Path(filePath);//Location of file in HDFS
+//	        FileSystem fs;
+//			try {
+//				fs = FileSystem.get(new Configuration());
+//				BufferedReader br=new BufferedReader(new InputStreamReader(fs.open(pt)));
+//		        String line;
+//		        line=br.readLine();
+//		        while (line != null){
+//		            System.out.println(line);
+//		            line=br.readLine();
+//		        }
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+	        
+			
+			
+			try {
+				word2vec.loadGoogleModel(filePath);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
 
 		@Override
 		public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
 			String book;
 			String description;
 			String line = value.toString();
-//			Word2VEC word2vec = new Word2VEC();
-//			word2vec.loadGoogleModel(FILEPATH);
-
-			try {
-				JSONObject obj = new JSONObject(line); // JSON from 1 line
-				if(obj.has("description")) {
-					book = obj.getString("asin");
-					description = obj.getString("description");
-					String sample = Preprocessing.removeNeedlessWords(description).get(0);
-//					Float f = word2vec.wordSimilarity(sample, "love");
-					context.write(new Text(book), new Text( sample + " " + word2vec.distance(sample).toString()));
-				}
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
+	
+			context.write(new Text(line), new Text(word2vec.distance(line).toString()));
 		}
 	}
 
@@ -117,7 +141,6 @@ public class word2vecTest extends Configured implements Tool {
 		@Override
 		public void reduce(Text key, Iterable<Text> values,
 				Context context) throws IOException, InterruptedException {
-
 			for (Text val : values) {  // Calculating Average : Sum/Count
 				context.write(key, val);
 			}	
