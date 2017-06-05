@@ -42,7 +42,7 @@ public class TopwordInTFIDF extends Configured implements Tool {
 			Reducer<Text, Text, Text, Text> {
 		private String word;
 		private Double tfidf;
-		private static int RANKSIZE = 3 ;
+		private static int RANKSIZE = 5 ;
 		
 		public void reduce(Text key, Iterable<Text> values, Context context)
 				throws IOException, InterruptedException {
@@ -63,13 +63,13 @@ public class TopwordInTFIDF extends Configured implements Tool {
 	            while (it.hasNext()) {
 	                rankCount++;
 	                String Key = (String) it.next();
-	                rankword += Key + "@" ;
-	                ranktfidf += map.get(Key) + "/";
-    
+//	                rankword += Key + "@" ;
+//	                ranktfidf += map.get(Key) + "/";
+	                context.write(new Text(key), new Text(Key) );
 	                if (rankCount == RANKSIZE)
 	                    break;
 	            }
-	            context.write(new Text(key), new Text(rankword + "\t" + ranktfidf) );
+	        //    context.write(new Text(key), new Text(rankword + "\t" + ranktfidf) );
 		}
 	}
 

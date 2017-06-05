@@ -27,7 +27,6 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 
 public class CalculateTFIDF extends Configured implements Tool {
-	private static int numAsin = 0 ;
 	public static class ProcessTFIDFMapper extends
 			Mapper<LongWritable, Text, Text, Text> {
 
@@ -49,7 +48,7 @@ public class CalculateTFIDF extends Configured implements Tool {
 				Context context) throws IOException, InterruptedException {
 
 			 // get the number of documents indirectly from the file-system (stored in the job name on purpose)
-	        int numberOfDocumentsInCorpus = 373  ;
+	        int numberOfDocumentsInCorpus = 1  ;
 	        // total frequency of this word
 	        int numberOfDocumentsInCorpusWhereKeyAppears = 0;
 	        Map<String, String> tempFrequencies = new HashMap<String, String>();

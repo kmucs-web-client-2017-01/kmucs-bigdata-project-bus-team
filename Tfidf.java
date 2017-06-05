@@ -35,6 +35,7 @@ public class Tfidf extends Configured implements Tool {
 //	static String OUTPUTPATH2 = "/home/kmucs/workspace/WordCount/output2" ;
 	static String INPUTPATH ;
 	static String OUTPUTPATH ;
+	static int numofAsin = 0 ;
 
 	public static void main(String[] args) throws Exception {
 		System.out.println(Arrays.toString(args));
@@ -48,7 +49,7 @@ public class Tfidf extends Configured implements Tool {
 		INPUTPATH = args[0] ;
 		OUTPUTPATH = args[1];
 		ToolRunner.run(new Configuration(), new WordCount(), args);
-		ToolRunner.run(new Configuration(), new AsinCount(), args);
+	//	ToolRunner.run(new Configuration(), new AsinCount(), args);
 		ToolRunner.run(new Configuration(), new WordCountForAsin(), args);
 		ToolRunner.run(new Configuration(), new CalculateTFIDF(), args);
 		ToolRunner.run(new Configuration(), new TopwordInTFIDF(), args);
