@@ -1,4 +1,4 @@
-package kr.ac.kookmin.cs.bigdata;
+package kr.ac.kookmin.cs.bigdata.pkh;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -63,13 +63,10 @@ public class TopwordInTFIDF extends Configured implements Tool {
 	            while (it.hasNext()) {
 	                rankCount++;
 	                String Key = (String) it.next();
-//	                rankword += Key + "@" ;
-//	                ranktfidf += map.get(Key) + "/";
 	                context.write(new Text(key), new Text(Key) );
 	                if (rankCount == RANKSIZE)
 	                    break;
 	            }
-	        //    context.write(new Text(key), new Text(rankword + "\t" + ranktfidf) );
 		}
 	}
 

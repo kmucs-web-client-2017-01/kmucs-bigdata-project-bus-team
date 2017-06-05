@@ -1,4 +1,4 @@
-package kr.ac.kookmin.cs.bigdata;
+package kr.ac.kookmin.cs.bigdata.pkh;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -47,8 +47,7 @@ public class CalculateTFIDF extends Configured implements Tool {
 		public void reduce(Text key, Iterable<Text> values,
 				Context context) throws IOException, InterruptedException {
 
-			 // get the number of documents indirectly from the file-system (stored in the job name on purpose)
-	        int numberOfDocumentsInCorpus = 1  ;
+	        int numberOfDocumentsInCorpus = 2370585  ;
 	        // total frequency of this word
 	        int numberOfDocumentsInCorpusWhereKeyAppears = 0;
 	        Map<String, String> tempFrequencies = new HashMap<String, String>();

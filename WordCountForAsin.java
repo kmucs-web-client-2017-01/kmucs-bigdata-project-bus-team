@@ -1,11 +1,11 @@
-package kr.ac.kookmin.cs.bigdata;
+package kr.ac.kookmin.cs.bigdata.pkh;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import kr.ac.kookmin.cs.bigdata.WordCount.WordCountMapper;
-import kr.ac.kookmin.cs.bigdata.WordCount.WordCountReducer;
+import kr.ac.kookmin.cs.bigdata.pkh.WordCount.WordCountMapper;
+import kr.ac.kookmin.cs.bigdata.pkh.WordCount.WordCountReducer;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
@@ -39,7 +39,7 @@ public class WordCountForAsin extends Configured implements Tool {
 				context.write(new Text(wordAndAsin[1]), new Text(wordAndAsin[0]
 						+ "=" + wordAndAsinCounter[1]));
 			} catch (Exception e) {
-			//	e.printStackTrace();
+				e.printStackTrace();
 			}
 		}
 	}
