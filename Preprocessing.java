@@ -24,19 +24,20 @@ public class Preprocessing {
 		}
     }};
 	
-	public static ArrayList<String> removeNeedlessWords(String text)
+    public static ArrayList<String> removeNeedlessWords(String text)
 	{
 		Stemmer stemmer = new Stemmer();
 		ArrayList<String> words = new ArrayList<String>();
-		text = text.replaceAll("[^a-z A-Z 0-9\\s]", "");
+		text = text.replaceAll("[^a-z A-Z 0-9\\s]", " ");
 		String[] splitText = text.split(" ");
 		
 		for(String w : splitText) {
 			if(!PREWORDMAP.containsKey(w)) {
 				stemmer.add(w.toCharArray(), w.length());
 				stemmer.stem();
-				words.add(stemmer.toString());
-//				System.out.println();
+				String stemmerResult = stemmer.toString();
+				if(stemmerResult != " " && stemmerResult.length() > 0)
+					words.add(stemmerResult);
 			}
 		}
 		

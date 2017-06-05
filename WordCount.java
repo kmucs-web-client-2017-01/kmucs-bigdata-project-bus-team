@@ -47,7 +47,6 @@ public class WordCount extends Configured implements Tool {
 				e.printStackTrace();
 			}
 
-			description = Tfidf.StringReplace(description);
 			ArrayList<String> listDescription = Preprocessing.removeNeedlessWords(description) ;
 			
 			for ( String val : listDescription){
