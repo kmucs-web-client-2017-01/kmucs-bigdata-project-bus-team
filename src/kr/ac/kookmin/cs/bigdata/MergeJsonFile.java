@@ -68,21 +68,22 @@ public class MergeJsonFile
 			while ((topString = topIn.readLine()) != null)
 			{
 				JSONObject jsonObj = new JSONObject(topString);
-				String topFilterString = "";
-				String descriptionWords = jsonObj.get("description").toString();
-				topFilterString += jsonObj.getString("asin");
+				//String topFilterString = "";
+				//String descriptionWords = jsonObj.get("description").toString();
+				//topFilterString += jsonObj.getString("asin");
 				
-				for(String token : descriptionWords.split(" "))
-				{
+				//for(String token : descriptionWords.split(" "))
+				//{
 					BufferedReader overallIn = new BufferedReader(new FileReader(overallJsonFilePath));
 					
 					while((overallString = overallIn.readLine()) != null)
 					{
-						fw.write(topFilterString + " " + token + " " + overallString);
+						//fw.write(topString + " " + token + " " + overallString);
+						fw.write(topString + overallString);
 						fw.flush();
 					}
 					overallIn.close();
-				}
+				//}
 			}
 			fw.close();
 		}
